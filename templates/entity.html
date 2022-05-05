@@ -12,8 +12,8 @@
         {% for item in row %}
         <td>{{item}}</td>
         {% endfor %}
-        <td><form action="{{UpdateRoute}}"><input type="submit"></input></form></td>
-        <td><form action="{{DeleteRoute}}"><input type="submit"></input></form></td>
+        <td><form action="{{UpdateRoute}}"><input value="update" type="submit"></input></form></td>
+        <td><form action="{{DeleteRoute}}"><input value="delete" type="submit"></input></form></td>
     </tr>
     {% endfor %}
 {% endblock %}
