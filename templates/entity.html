@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <tr>
+        {% for header in headers %}
+        <th>{{header}}</th>
+        {% endfor %}
+        <th>Update</th>
+        <th>Delete</th>
+    </tr>
+    {% for row in data %}
+    <tr>
+        {% for item in row %}
+        <td>{{item}}</td>
+        {% endfor %}
+        <td><form action="{{UpdateRoute}}"><input type="submit"></input></form></td>
+        <td><form action="{{DeleteRoute}}"><input type="submit"></input></form></td>
+    </tr>
+    {% endfor %}
+{% endblock %}
+{% block insertform %}
+<h1>Insert</h1>
+<form action="{{InsertRoute}}">
+    <table>
+        <tr>
+            {% for header in headers %}
+            <td><input name="{{header}}" placeholder="{{header}}"></input></td>
+            {% endfor %}
+        </tr>
+    </table>
+    <input type="submit">
+</form>
+{% endblock %}
