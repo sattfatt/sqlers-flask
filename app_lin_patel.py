@@ -22,7 +22,7 @@ def customers():
             ["3","Elon","Musk","35","musk@gmail.com","0","3500 Deer Creek Road","Corvallis","OR","97333","US","310.709.9497"]
         ],
         PageHeader="Customers Table",
-        UpdateRoute="/customers", #TODO change this in the future to the actual route
+        UpdateRoute="/update/customers", #TODO change this in the future to the actual route
         DeleteRoute="/customers", #TODO change this in the future to the actual route
         InsertRoute="/customers" #TODO change this in the future to the actual route
     )
@@ -39,7 +39,7 @@ def houses():
             ["2","2","2022-03-02","649800.0000","659800.0000","255 Llano De Los Robles Ave","San Jose","CA","95136","Wonderful Place! WOW!"]
         ],
         PageHeader="Houses Table",
-        UpdateRoute="/houses", #TODO change this in the future to the actual route
+        UpdateRoute="/update/houses", #TODO change this in the future to the actual route
         DeleteRoute="/houses", #TODO change this in the future to the actual route
         InsertRoute="/houses" #TODO change this in the future to the actual route
     )
@@ -56,7 +56,7 @@ def sales():
             ["3","3","3","2022-02-28","895200.0000","151200.0000"]
         ],
         PageHeader="Sales Table",
-        UpdateRoute="/sales", #TODO change this in the future to the actual route
+        UpdateRoute="/update/sales", #TODO change this in the future to the actual route
         DeleteRoute="/sales", #TODO change this in the future to the actual route
         InsertRoute="/sales" #TODO change this in the future to the actual route
     )
@@ -73,7 +73,7 @@ def wishes():
             ["3","3","2","2022-05-01 01:00:00","2022-05-01 01:00:00"]
         ],
         PageHeader="Customer House Wishes",
-        UpdateRoute="/customer_house_wishes", #TODO change this in the future to the actual route
+        UpdateRoute="/update/customer_house_wishes", #TODO change this in the future to the actual route
         DeleteRoute="/customer_house_wishes", #TODO change this in the future to the actual route
         InsertRoute="/customer_house_wishes" #TODO change this in the future to the actual route
     )
@@ -90,9 +90,49 @@ def categories():
             ["3","town house","4bd 3ba"]
         ],
         PageHeader="Categories Table",
-        UpdateRoute="/categories", #TODO change this in the future to the actual route
+        UpdateRoute="/update/categories", #TODO change this in the future to the actual route
         DeleteRoute="/categories", #TODO change this in the future to the actual route
         InsertRoute="/categories" #TODO change this in the future to the actual route
+    )
+
+@app.route("/update/customers")
+def update_customers():
+    return render_template(
+        'update.html',
+        attributes=["customer_id", "first_name", "last_name", "age", "email", "is_active", "street", "city", "state", "zip", "country", "phone"],
+        UpdateRoute="/customers"
+    )
+
+@app.route("/update/houses")
+def update_houses():
+    return render_template(
+        'update.html',
+        attributes=["house_id", "category_id", "list_date", "list_price", "adjusted_price", "street", "city", "state", "zip", "location_description"],
+        UpdateRoute="/houses"
+    )
+
+@app.route("/update/sales")
+def update_sales():
+    return render_template(
+        'update.html',
+        attributes=["sale_id", "house_id", "customer_id", "date", "sale_price", "profit"],
+        UpdateRoute="/sales"
+    )
+
+@app.route("/update/customer_house_wishes")
+def update_customer_house_wishes():
+    return render_template(
+        'update.html',
+        attributes=["wish_id", "house_id", "customer_id", "create_at", "updated_at"],
+        UpdateRoute="/customer_house_wishes"
+    )
+
+@app.route("/update/categories")
+def update_categories():
+    return render_template(
+        'update.html',
+        attributes=["category_id", "name", "description"],
+        UpdateRoute="/categories"
     )
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8765, debug=True)
