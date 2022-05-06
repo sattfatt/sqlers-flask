@@ -83,11 +83,11 @@ def categories():
     return render_template(
         'entity.html',
         title="Categories",
-        headers=["category_id", "name", "description"],
+        headers=["category_id", "name", "beds", "baths"],
         data=[
-            ["1","single-family","3bd 2ba"],
-            ["2","condo","2bd 2ba"],
-            ["3","town house","4bd 3ba"]
+            ["1","single-family","3", "2"],
+            ["2","condo","2", "2"],
+            ["3","town house","4", "3"]
         ],
         PageHeader="Categories Table",
         UpdateRoute="/update/categories", #TODO change this in the future to the actual route
