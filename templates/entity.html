@@ -19,7 +19,7 @@
 {% endblock %}
 {% block insertform %}
 <h1>Insert</h1>
-<form action="{{InsertRoute}}">
+<form action="{{InsertRoute}}" method="POST">
     <table>
         <tr>
             {% for header in headers %}

@@ -1,7 +1,16 @@
-from flask import Flask
-from flask import render_template
+from flask import Flask, render_template, request, redirect
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
+app.config['MYSQL_HOST'] = 'classmysql.engr.oregonstate.edu'
+app.config['MYSQL_USER'] = 'cs340_linhua'
+app.config['MYSQL_PASSWORD'] = '6152' #last 4 of onid
+app.config['MYSQL_DB'] = 'cs340_linhua'
+app.config['MYSQL_CURSORCLASS'] = "DictCursor"
+
+
+mysql = MySQL(app)
+
 
 @app.route("/")
 def hello_world():
@@ -29,19 +38,35 @@ def customers():
 
 @app.route("/houses")
 def houses():
+    query = "SELECT * FROM Houses;"
+    cur = mysql.connection.cursor()
+    cur.execute(query)
+    results = cur.fetchall()
+    data = list()
+    for result in results:
+        row = [
+            result["house_id"],
+            result["category_id"],
+            result["list_date"],
+            result["list_price"],
+            result["adjusted_price"],
+            result["street"],
+            result["city"],
+            result["state"],
+            result["zip"],
+            result["location_description"],
+        ]
+        data.append(row)
+   
     return render_template(
         'entity.html',
         title="Houses",
-        headers=["house_id", "category_id", "list_date", "list_price", "adjusted_price", "street", "city", "state", "zip", "location_description"],
-        data=[
-            ["3","","2022-01-01","842000.0000","895200.0000","1400 Bowe Ave","Santa Clara","CA","95051","Amazing Place! WOW!"],
-            ["1","1","2022-01-02","848000.0000","890000.0000","144 3rd street","San Jose","CA","95112","Great Place! WOW!"],
-            ["2","2","2022-03-02","649800.0000","659800.0000","255 Llano De Los Robles Ave","San Jose","CA","95136","Wonderful Place! WOW!"]
-        ],
+        headers=["category_id", "list_date", "list_price", "adjusted_price", "street", "city", "state", "zip", "location_description"], 
+        data=data,
         PageHeader="Houses Table",
         UpdateRoute="/update/houses", #TODO change this in the future to the actual route
         DeleteRoute="/houses", #TODO change this in the future to the actual route
-        InsertRoute="/houses" #TODO change this in the future to the actual route
+        InsertRoute="/insert/houses" #TODO change this in the future to the actual route
     )
 
 @app.route("/sales")
@@ -94,7 +119,25 @@ def categories():
         DeleteRoute="/categories", #TODO change this in the future to the actual route
         InsertRoute="/categories" #TODO change this in the future to the actual route
     )
+@app.route("/insert/houses",methods=["POST"])
+def insert_houses():
+    form_data =request.form
+    category_id=form_data["category_id"]
+    list_date=form_data["list_date"]
+    list_price=form_data["list_price"]
+    adjusted_price=form_data["adjusted_price"]
+    street=form_data["street"]
+    city=form_data["city"]
+    state=form_data["state"]
+    _zip=form_data["zip"]
+    location_description=form_data["location_description"]
 
+    
+    query = "INSERT INTO Houses (category_id, list_date, list_price, adjusted_price, street, city, state, zip, location_description) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+    cur = mysql.connection.cursor()
+    cur.execute(query,(category_id, list_date, list_price, adjusted_price, street, city, state, _zip, location_description))
+    mysql.connection.commit()
+    return redirect("/houses")
 @app.route("/update/customers")
 def update_customers():
     return render_template(
