@@ -1,16 +1,12 @@
 from flask import Flask, render_template, request, redirect
 from flask_mysqldb import MySQL
+from database import SetupDatabaseConnection, RunSelectQuery
 
 app = Flask(__name__)
-app.config['MYSQL_HOST'] = 'classmysql.engr.oregonstate.edu'
-app.config['MYSQL_USER'] = 'cs340_linhua'
-app.config['MYSQL_PASSWORD'] = '6152' #last 4 of onid
-app.config['MYSQL_DB'] = 'cs340_linhua'
-app.config['MYSQL_CURSORCLASS'] = "DictCursor"
 
+SetupDatabaseConnection(app)
 
 mysql = MySQL(app)
-
 
 @app.route("/")
 def hello_world():
@@ -21,15 +17,13 @@ def hello_world():
 
 @app.route("/customers")
 def customers():
+    query = "SELECT * FROM Customers;"
+    data, tableHeader = RunSelectQuery(query, mysql)
     return render_template(
         'entity.html',
         title="Customers",
-        headers=["customer_id", "first_name", "last_name", "age", "email", "is_active", "street", "city", "state", "zip", "country", "phone"],
-        data=[
-            ["1","HuanChun","Lin","25","lin@gmail.com","0","1701 SW Western Blvd.","Corvallis","OR","97333","US","541.737.2464"],
-            ["2","Satyam","Patel","27","patel@gmail.com","1","1600 Amphitheatre Parkway","Mountain View","CA","97333","US","209.513.0514"],
-            ["3","Elon","Musk","35","musk@gmail.com","0","3500 Deer Creek Road","Corvallis","OR","97333","US","310.709.9497"]
-        ],
+        headers=tableHeader,
+        data=data,
         PageHeader="Customers Table",
         UpdateRoute="/update/customers", #TODO change this in the future to the actual route
         DeleteRoute="/customers", #TODO change this in the future to the actual route
@@ -44,24 +38,14 @@ def houses():
     query = "SELECT * FROM Houses;"
     if search is not None and search is not "":
         print(search)
-        query = "SELECT * FROM Houses WHERE street = " + "'" + search + "'" + ";"
+        query = "SELECT * FROM Houses WHERE street = '{}';".format(search)
 
+    data, tableHeader = RunSelectQuery(query, mysql)
 
-    cur = mysql.connection.cursor()
-    cur.execute(query)
-    results = cur.fetchall()
-    data = list()
-    for result in results:
-        data.append(result.values())
-
-    attributes = ["No houses found for that street"]
-    if len(results) > 0:
-        attributes = results[0].keys()
-   
     return render_template(
         'entity.html',
         title="Houses",
-        headers=attributes, 
+        headers=tableHeader, 
         data=data,
         PageHeader="Houses Table",
         UpdateRoute="/update/houses", #TODO change this in the future to the actual route
@@ -72,15 +56,13 @@ def houses():
 
 @app.route("/sales")
 def sales():
+    query = "SELECT * FROM Sales;"
+    data, tableHeader = RunSelectQuery(query, mysql)
     return render_template(
         'entity.html',
         title="Sales",
-        headers=["sale_id", "house_id", "customer_id", "date", "sale_price", "profit"],
-        data=[
-            ["1","1","1","2022-02-28","890000.0000","340000.0000"],
-            ["2","2","2","2022-03-15","659800.0000","144000.0000"],
-            ["3","3","3","2022-02-28","895200.0000","151200.0000"]
-        ],
+        headers=tableHeader,
+        data=data,
         PageHeader="Sales Table",
         UpdateRoute="/update/sales", #TODO change this in the future to the actual route
         DeleteRoute="/sales", #TODO change this in the future to the actual route
@@ -89,15 +71,14 @@ def sales():
 
 @app.route("/customer_house_wishes")
 def wishes():
+    query = "SELECT * FROM Customer_House_Wishes;"
+    data, tableHeader = RunSelectQuery(query, mysql)
+    
     return render_template(
         'entity.html',
         title="Customer House Wishes",
-        headers=["wish_id", "house_id", "customer_id", "create_at", "updated_at"],
-        data=[
-            ["1","1","1","2022-05-02 01:00:00","2022-05-10 01:00:00"],
-            ["2","1","2","2022-05-01 01:00:00","2022-05-11 01:00:00"],
-            ["3","3","2","2022-05-01 01:00:00","2022-05-01 01:00:00"]
-        ],
+        headers=tableHeader,
+        data=data,
         PageHeader="Customer House Wishes",
         UpdateRoute="/update/customer_house_wishes", #TODO change this in the future to the actual route
         DeleteRoute="/customer_house_wishes", #TODO change this in the future to the actual route
@@ -106,15 +87,15 @@ def wishes():
 
 @app.route("/categories")
 def categories():
+
+    query = "SELECT * FROM Categories;"
+    data, tableHeader = RunSelectQuery(query, mysql)
+    
     return render_template(
         'entity.html',
         title="Categories",
-        headers=["category_id", "name", "beds", "baths"],
-        data=[
-            ["1","single-family","3", "2"],
-            ["2","condo","2", "2"],
-            ["3","town house","4", "3"]
-        ],
+        headers=tableHeader,
+        data=data,
         PageHeader="Categories Table",
         UpdateRoute="/update/categories", #TODO change this in the future to the actual route
         DeleteRoute="/categories", #TODO change this in the future to the actual route
