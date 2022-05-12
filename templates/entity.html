@@ -1,5 +1,9 @@
 {% extends 'layout.html' %}
 {% block content %}
+{% if SearchRoute %}
+<form action={{SearchRoute}}><input name="search" type="text"></input><input value="search" type="submit"></input></form>
+{% endif %}
+<table>
     <tr>
         {% for header in headers %}
         <th>{{header}}</th>
@@ -16,6 +20,7 @@
         <td><form action="{{DeleteRoute}}"><input value="delete" type="submit"></input></form></td>
     </tr>
     {% endfor %}
+</table>
 {% endblock %}
 {% block insertform %}
 <h1>Insert</h1>

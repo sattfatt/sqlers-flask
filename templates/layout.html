@@ -7,6 +7,6 @@
 <body>
     {% include 'nav.html' %}
     <h1>{{title}}</h1>
-    <table>{% block content %}{% endblock content %}</table>
+    {% block content %}{% endblock content %}
     {% block insertform %}{% endblock insertform %}
 </body>

@@ -38,35 +38,36 @@ def customers():
 
 @app.route("/houses")
 def houses():
+
+    search = request.args.get("search")
+
     query = "SELECT * FROM Houses;"
+    if search is not None and search is not "":
+        print(search)
+        query = "SELECT * FROM Houses WHERE street = " + "'" + search + "'" + ";"
+
+
     cur = mysql.connection.cursor()
     cur.execute(query)
     results = cur.fetchall()
     data = list()
     for result in results:
-        row = [
-            result["house_id"],
-            result["category_id"],
-            result["list_date"],
-            result["list_price"],
-            result["adjusted_price"],
-            result["street"],
-            result["city"],
-            result["state"],
-            result["zip"],
-            result["location_description"],
-        ]
-        data.append(row)
+        data.append(result.values())
+
+    attributes = ["No houses found for that street"]
+    if len(results) > 0:
+        attributes = results[0].keys()
    
     return render_template(
         'entity.html',
         title="Houses",
-        headers=["category_id", "list_date", "list_price", "adjusted_price", "street", "city", "state", "zip", "location_description"], 
+        headers=attributes, 
         data=data,
         PageHeader="Houses Table",
         UpdateRoute="/update/houses", #TODO change this in the future to the actual route
         DeleteRoute="/houses", #TODO change this in the future to the actual route
-        InsertRoute="/insert/houses" #TODO change this in the future to the actual route
+        InsertRoute="/insert/houses", #TODO change this in the future to the actual route
+        SearchRoute="/houses"
     )
 
 @app.route("/sales")
