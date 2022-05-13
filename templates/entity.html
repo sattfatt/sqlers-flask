@@ -26,7 +26,7 @@
 <h1>Insert</h1>
 <form action="{{InsertRoute}}" method="POST">
     <table>
-        {% for header in headers %}
+        {% for header in headers[1:] %}
         <tr>
             <td><input name="{{header}}" placeholder="{{header}}"></input></td>
         </tr>
