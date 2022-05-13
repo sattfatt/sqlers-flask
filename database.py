@@ -13,7 +13,7 @@ def RunSelectQuery(query, mysql):
     data = [result.values() for result in results]
     keys = []
     if len(results) > 0:
-        keys = results[0].keys()
+        keys = list(results[0].keys())
 
     return data, keys
 
