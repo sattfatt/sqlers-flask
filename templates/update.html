@@ -1,15 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
+<h1>Update</h1>
 <form action="{{UpdateRoute}}">
 <table>
+    {% for item in attributes %}
     <tr>
-        {% for item in attributes %}
         <td><input name="{{item}}" placeholder="{{item}}" type="text"></td>
-        {% endfor %}
-        <td>
-            <input value="update" type="submit"></input>
-        </td>
     </tr>
+    {% endfor %}
 </table>
+<input value="update" type="submit"></input>
 </form>
 {% endblock %}
