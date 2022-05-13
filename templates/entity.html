@@ -1,24 +1,33 @@
 {% extends 'layout.html' %}
 {% block content %}
 {% if SearchRoute %}
-<form action={{SearchRoute}}><input placeholder="search for a street" name="search" type="text"></input><input value="search" type="submit"></input></form>
+<form action={{SearchRoute}}><input placeholder="search for a street" name="search" type="text"></input><input
+        value="search" type="submit"></input></form>
 {% endif %}
 <table>
-    <tr>
-        {% for header in headers %}
-        <th>{{header}}</th>
-        {% endfor %}
-        <th>Update</th>
-        <th>Delete</th>
-    </tr>
-    {% for row in data %}
-    <tr>
-        {% for item in row %}
-        <td>{{item}}</td>
-        {% endfor %}
-        <td><form action="{{UpdateRoute}}"><input value="update" type="submit"></input></form></td>
-        <td><form action="{{DeleteRoute}}"><input value="delete" type="submit"></input></form></td>
-    </tr>
+    <thead>
+        <tr>
+            {% for header in headers %}
+            <th>{{header}}</th>
+            {% endfor %}
+            <th>Update</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}
+        <tr>
+            {% for item in row %}
+            <td>{{item}}</td>
+            {% endfor %}
+            <td>
+                <form action="{{UpdateRoute}}"><input value="update" type="submit"></input></form>
+            </td>
+            <td>
+                <form action="{{DeleteRoute}}"><input value="delete" type="submit"></input></form>
+            </td>
+        </tr>
+    </tbody>
     {% endfor %}
 </table>
 {% endblock %}

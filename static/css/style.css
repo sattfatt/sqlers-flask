@@ -28,14 +28,22 @@ a:hover {
 table {
     margin-top: 10px;
     margin-bottom: 10px;
-    border-collapse: collapse;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-radius: 10px;
+    box-sizing: border-box;
 }
+
 th {
     color: black;
     background-color: white;
 }
+
+th:first-child {
+    border-top-left-radius: 10px;
+}
+th:last-child {
+    border-top-right-radius: 10px;
+}
+
 tr {
     color: black;
     background-color: #ffffffbf;
