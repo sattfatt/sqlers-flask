@@ -27,8 +27,7 @@ def customers():
         PageHeader="Customers Table",
         UpdateRoute="/update/customers",
         DeleteRoute="/delete/customers",
-        InsertRoute="/insert/customers",
-        insertExcluded=["customer_id"]
+        InsertRoute="/insert/customers"
     )
 
 @app.route("/houses")
@@ -37,12 +36,11 @@ def houses():
     search = request.args.get("search")
 
     query = "SELECT * FROM Houses;"
-    if search is not None and search is not "":
+    if search is not None and search != "":
         print(search)
         query = "SELECT * FROM Houses WHERE street = '{}';".format(search)
 
     data, tableHeader = RunSelectQuery(query, mysql)
-    print(tableHeader)
 
     return render_template(
         'entity.html',
@@ -53,15 +51,13 @@ def houses():
         UpdateRoute="/update/houses",
         DeleteRoute="/delete/houses",
         InsertRoute="/insert/houses",
-        SearchRoute="/houses",
-        insertExcluded=["house_id"]
+        SearchRoute="/houses"
     )
 
 @app.route("/sales")
 def sales():
     query = "SELECT * FROM Sales;"
     data, tableHeader = RunSelectQuery(query, mysql)
-    print(tableHeader)
     return render_template(
         'entity.html',
         title="Sales",
@@ -70,8 +66,7 @@ def sales():
         PageHeader="Sales Table",
         UpdateRoute="/update/sales",
         DeleteRoute="/delete/sales",
-        InsertRoute="/insert/sales",
-        insertExcluded=["sale_id"]
+        InsertRoute="/insert/sales"
     )
 
 @app.route("/customer_house_wishes")
@@ -87,8 +82,7 @@ def wishes():
         PageHeader="Customer House Wishes",
         UpdateRoute="/update/customer_house_wishes",
         DeleteRoute="/delete/customer_house_wishes",
-        InsertRoute="/insert/customer_house_wishes",
-        insertExcluded=["wish_id"]
+        InsertRoute="/insert/customer_house_wishes"
     )
 
 @app.route("/categories")
@@ -105,8 +99,7 @@ def categories():
         PageHeader="Categories Table",
         UpdateRoute="/update/categories",
         DeleteRoute="/delete/categories",
-        InsertRoute="/insert/categories",
-        insertExcluded=["category_id"]
+        InsertRoute="/insert/categories"
     )
 
 @app.route("/insert/customers",methods=["POST"])
