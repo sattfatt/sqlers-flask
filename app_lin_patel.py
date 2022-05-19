@@ -1,8 +1,15 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, Request
 from flask_mysqldb import MySQL
-from database import SetupDatabaseConnection, RunSelectQuery
+from database import SetupDatabaseConnection, RunSelectQuery, RunUpdateQuery
+from werkzeug.datastructures import ImmutableOrderedMultiDict
 
-app = Flask(__name__)
+class OverrideRequest(Request):
+    parameter_storage_class = ImmutableOrderedMultiDict
+
+class OverrideFlask(Flask):
+    request_class = OverrideRequest
+
+app = OverrideFlask(__name__)
 
 SetupDatabaseConnection(app)
 
@@ -197,7 +204,7 @@ def delete_categories():
     mysql.connection.commit()
     return redirect("/categories")
 
-@app.route("/update/customers")
+@app.route("/update/customers", methods=["GET"])
 def update_customers():
     return render_template(
         'update.html',
@@ -205,7 +212,7 @@ def update_customers():
         UpdateRoute="/customers"
     )
 
-@app.route("/update/houses")
+@app.route("/update/houses", methods=["GET"])
 def update_houses():
     return render_template(
         'update.html',
@@ -213,7 +220,7 @@ def update_houses():
         UpdateRoute="/houses"
     )
 
-@app.route("/update/sales")
+@app.route("/update/sales", methods=["GET"])
 def update_sales():
     return render_template(
         'update.html',
@@ -221,20 +228,32 @@ def update_sales():
         UpdateRoute="/sales"
     )
 
-@app.route("/update/customer_house_wishes")
+@app.route("/update/customer_house_wishes", methods=["GET", "POST"])
 def update_customer_house_wishes():
-    return render_template(
-        'update.html',
-        attributes=["wish_id", "house_id", "customer_id", "create_at", "updated_at"],
-        UpdateRoute="/customer_house_wishes"
-    )
+    return update_helper(request, "Customer_House_Wishes", "wish_id", "/customer_house_wishes")
 
-@app.route("/update/categories")
+
+@app.route("/update/categories", methods=["GET", "POST"])
 def update_categories():
-    return render_template(
-        'update.html',
-        attributes=["category_id", "name", "description"],
-        UpdateRoute="/categories"
-    )
+    return update_helper(request, "Categories", "category_id", "/categories")
+
+
+def update_helper(req, table, id_attribute, redirect_path):
+    if req.method == "GET":
+        query = "SELECT * FROM {} WHERE {}={}".format(table, id_attribute , req.args["id"])
+        data, attributes = RunSelectQuery(query, mysql)
+        zipped = list(zip(data[0], attributes))
+
+        return render_template(
+            'update.html',
+            attributes=zipped,
+            UpdateRoute="/update{}".format(redirect_path)
+        )
+    else:
+        args = req.form
+        RunUpdateQuery(table, args, mysql)
+        return redirect(redirect_path)
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8765, debug=True)

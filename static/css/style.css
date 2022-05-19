@@ -53,3 +53,8 @@ td, th {
     text-align: left;
     padding: 10px;
 }
+
+.hidden {
+    position: absolute;
+    visibility: hidden;
+}

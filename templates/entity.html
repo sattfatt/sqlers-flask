@@ -1,8 +1,10 @@
 {% extends 'layout.html' %}
 {% block content %}
 {% if SearchRoute %}
-<form action={{SearchRoute}}><input placeholder="search for a street" name="search" type="text"></input><input
-        value="search" type="submit"></input></form>
+<form action={{SearchRoute}}>
+    <input placeholder="search for a street" name="search" type="text"></input>
+    <input value="search" type="submit"></input>
+</form>
 {% endif %}
 <table>
     <thead>
@@ -21,13 +23,19 @@
             <td>{{item}}</td>
             {% endfor %}
             <td>
-                <form action="{{UpdateRoute}}"><input value="update" type="submit"></input></form>
+                <form method="get" action="{{UpdateRoute}}">
+                    <input value="update" type="submit"></input>
+                    <input name="id" value="{{row[0]}}" type="text" class="hidden"></input>
+                </form>
             </td>
             <td>
-                <form action="{{DeleteRoute}}"><input value="delete" type="submit"></input></form>
+                <form method="get" action="{{DeleteRoute}}">
+                    <input value="delete" type="submit"></input>
+                    <input name="id" value="{{row[0]}}" type="text" class="hidden"></input>
+                </form>
             </td>
         </tr>
-    {% endfor %}
+        {% endfor %}
     </tbody>
 </table>
 {% endblock %}
