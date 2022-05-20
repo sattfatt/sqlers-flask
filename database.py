@@ -17,8 +17,15 @@ def RunSelectQuery(query, mysql):
 
     return data, keys
 
-def RunInsertQuery(query, data, mysql):
-    pass
+def RunInsertQuery(table, form, mysql):
+    keys = list(form.keys())
+    values = list(form.values())
+    values = ["'{}'".format(value) for value in values]
+    query = "INSERT INTO {} ({}) VALUES ({});".format(table, ",".join(keys), ",".join(values))
+    print(query)
+    cur = mysql.connection.cursor()
+    cur.execute(query)
+    mysql.connection.commit()
 
 def RunUpdateQuery(table, args, mysql):
     keys = list(args.keys())
@@ -28,10 +35,17 @@ def RunUpdateQuery(table, args, mysql):
         q += "{}='{}',".format(key, value)
     q = q[:-1]
 
-    query = "UPDATE {} SET {} WHERE {}='{}'".format(table, q, keys[0], values[0])
+    query = "UPDATE {} SET {} WHERE {}='{}';".format(table, q, keys[0], values[0])
 
     cur = mysql.connection.cursor()
     cur.execute(query)
     mysql.connection.commit()
 
+def RunDeleteQuery(table, args, id, mysql):
+    keys = list(args.keys())
+    values = list(args.values())
+    query = "DELETE FROM {} WHERE {}='{}';".format(table, id, values[0])
+    cur = mysql.connection.cursor()
+    cur.execute(query)
+    mysql.connection.commit()
     
