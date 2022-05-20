@@ -2,7 +2,7 @@
 {% block content %}
 {% if SearchRoute %}
 <form action={{SearchRoute}}>
-    <input placeholder="search for a street" name="search" type="text"></input>
+    <input placeholder="search for a {{SearchAttribute}}" name="search" type="text"></input>
     <input value="search" type="submit"></input>
 </form>
 {% endif %}

@@ -53,13 +53,7 @@ def customers():
 @app.route("/houses")
 def houses():
 
-    search = request.args.get("search")
-
-    where = None
-    if search is not None and search != "":
-        where = ("street", search)
-
-    data, tableHeader = RunSelectQuery("Houses", mysql, where)
+    data, tableHeader = RunSelectQuery("Houses", mysql, search_helper(request, "street"))
 
     return render_template(
         'entity.html',
@@ -70,7 +64,8 @@ def houses():
         UpdateRoute="/update/houses",
         DeleteRoute="/delete/houses",
         InsertRoute="/insert/houses",
-        SearchRoute="/houses"
+        SearchRoute="/houses",
+        SearchAttribute="street"
     )
 
 
@@ -119,6 +114,14 @@ def categories():
         DeleteRoute="/delete/categories",
         InsertRoute="/insert/categories"
     )
+
+def search_helper(request, attribute_name):
+    search = request.args.get("search")
+    where = None
+    if search is not None and search != "":
+        where = (attribute_name, search)
+    return where
+
 
 # -------------
 #    INSERT
@@ -186,11 +189,8 @@ def update_categories():
 
 def update_helper(req, table, id_attribute, redirect_path):
     if req.method == "GET":
-        query = "SELECT * FROM {} WHERE {}={}".format(
-            table, id_attribute, req.args["id"])
-        data, attributes = RunSelectQuery(query, mysql)
+        data, attributes = RunSelectQuery(table, mysql, (id_attribute, req.args["id"]))
         zipped = list(zip(data[0], attributes))
-
         return render_template(
             'update.html',
             attributes=zipped,

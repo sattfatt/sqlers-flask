@@ -25,32 +25,36 @@ def RunSelectQuery(table, mysql, where=None):
 
 def RunInsertQuery(table, form, mysql):
     keys = list(form.keys())
-    values = list(form.values())
-    values = ["'{}'".format(value) for value in values]
-    query = "INSERT INTO {} ({}) VALUES ({});".format(table, ",".join(keys), ",".join(values))
+    values = form.values()
+    values = [None if value=="" else value for value in values]
+
+    placeholder = ",".join(["%s" for value in values])
+
+    query = "INSERT INTO {} ({}) VALUES ({});".format(table, ",".join(keys), placeholder)
     print(query)
     cur = mysql.connection.cursor()
-    cur.execute(query)
+    cur.execute(query, values)
     mysql.connection.commit()
 
 def RunUpdateQuery(table, args, mysql):
     keys = list(args.keys())
-    values = list(args.values())
+    values = args.values()
+    values = [None if value=="" else value for value in values]
     q = ""
-    for key, value in zip(keys[1:], values[1:]):
-        q += "{}='{}',".format(key, value)
+    for key in keys[1:]:
+        q += "{}=%s,".format(key)
     q = q[:-1]
 
     query = "UPDATE {} SET {} WHERE {}='{}';".format(table, q, keys[0], values[0])
 
     cur = mysql.connection.cursor()
-    cur.execute(query)
+    cur.execute(query, values[1:])
     mysql.connection.commit()
 
-def RunDeleteQuery(table, args, id, mysql):
+def RunDeleteQuery(table, args, id_attribute, mysql):
     keys = list(args.keys())
     values = list(args.values())
-    query = "DELETE FROM {} WHERE {}='{}';".format(table, id, values[0])
+    query = "DELETE FROM {} WHERE {}='{}';".format(table, id_attribute, values[0])
     cur = mysql.connection.cursor()
     cur.execute(query)
     mysql.connection.commit()
