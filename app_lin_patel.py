@@ -165,17 +165,17 @@ def insert_categories():
 # -------------
 
 
-@app.route("/update/customers", methods=["GET"])
+@app.route("/update/customers", methods=["GET", "POST"])
 def update_customers():
     return update_helper(request, "Customers", "customer_id", "/customers")
 
 
-@app.route("/update/houses", methods=["GET"])
+@app.route("/update/houses", methods=["GET", "POST"])
 def update_houses():
     return update_helper(request, "Houses", "house_id", "/houses")
 
 
-@app.route("/update/sales", methods=["GET"])
+@app.route("/update/sales", methods=["GET", "POST"])
 def update_sales():
     return update_helper(request, "Sales", "sale_id", "/sales")
 
