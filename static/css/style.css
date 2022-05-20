@@ -55,6 +55,8 @@ td, th {
 }
 
 .hidden {
-    position: absolute;
+    top:0;
+    left:0;
+    position: fixed;
     visibility: hidden;
 }

@@ -6,38 +6,40 @@
     <input value="search" type="submit"></input>
 </form>
 {% endif %}
-<table>
-    <thead>
-        <tr>
-            {% for header in headers %}
-            <th>{{header}}</th>
+<div style="overflow-x:auto; width:100%">
+    <table>
+        <thead>
+            <tr>
+                {% for header in headers %}
+                <th>{{header}}</th>
+                {% endfor %}
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                {% for item in row %}
+                <td>{{item}}</td>
+                {% endfor %}
+                <td>
+                    <form method="get" action="{{UpdateRoute}}">
+                        <input value="update" type="submit"></input>
+                        <input name="id" value="{{row[0]}}" type="text" class="hidden"></input>
+                    </form>
+                </td>
+                <td>
+                    <form method="get" action="{{DeleteRoute}}">
+                        <input value="delete" type="submit"></input>
+                        <input name="id" value="{{row[0]}}" type="text" class="hidden"></input>
+                    </form>
+                </td>
+            </tr>
             {% endfor %}
-            <th>Update</th>
-            <th>Delete</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for row in data %}
-        <tr>
-            {% for item in row %}
-            <td>{{item}}</td>
-            {% endfor %}
-            <td>
-                <form method="get" action="{{UpdateRoute}}">
-                    <input value="update" type="submit"></input>
-                    <input name="id" value="{{row[0]}}" type="text" class="hidden"></input>
-                </form>
-            </td>
-            <td>
-                <form method="get" action="{{DeleteRoute}}">
-                    <input value="delete" type="submit"></input>
-                    <input name="id" value="{{row[0]}}" type="text" class="hidden"></input>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
 {% endblock %}
 {% block insertform %}
 <h1>Insert</h1>
