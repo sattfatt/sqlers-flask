@@ -1,3 +1,6 @@
+from typing import Tuple
+
+
 def SetupDatabaseConnection(app):
     app.config['MYSQL_HOST'] = 'classmysql.engr.oregonstate.edu'
     app.config['MYSQL_USER'] = 'cs340_linhua'
@@ -6,7 +9,10 @@ def SetupDatabaseConnection(app):
     app.config['MYSQL_CURSORCLASS'] = "DictCursor"
 
 
-def RunSelectQuery(query, mysql):
+def RunSelectQuery(table, mysql, where=None):
+    query = "SELECT * FROM {};".format(table)
+    if (where is not None):
+        query = "SELECT * FROM {} WHERE {}='{}'".format(table, where[0], where[1])
     cur = mysql.connection.cursor()
     cur.execute(query)
     results = cur.fetchall()

@@ -37,8 +37,7 @@ def hello_world():
 
 @app.route("/customers")
 def customers():
-    query = "SELECT * FROM Customers;"
-    data, tableHeader = RunSelectQuery(query, mysql)
+    data, tableHeader = RunSelectQuery("Customers", mysql)
     return render_template(
         'entity.html',
         title="Customers",
@@ -56,12 +55,11 @@ def houses():
 
     search = request.args.get("search")
 
-    query = "SELECT * FROM Houses;"
+    where = None
     if search is not None and search != "":
-        print(search)
-        query = "SELECT * FROM Houses WHERE street = '{}';".format(search)
+        where = ("street", search)
 
-    data, tableHeader = RunSelectQuery(query, mysql)
+    data, tableHeader = RunSelectQuery("Houses", mysql, where)
 
     return render_template(
         'entity.html',
@@ -78,8 +76,7 @@ def houses():
 
 @app.route("/sales")
 def sales():
-    query = "SELECT * FROM Sales;"
-    data, tableHeader = RunSelectQuery(query, mysql)
+    data, tableHeader = RunSelectQuery("Sales", mysql)
     return render_template(
         'entity.html',
         title="Sales",
@@ -94,8 +91,7 @@ def sales():
 
 @app.route("/customer_house_wishes")
 def wishes():
-    query = "SELECT * FROM Customer_House_Wishes;"
-    data, tableHeader = RunSelectQuery(query, mysql)
+    data, tableHeader = RunSelectQuery("Customer_House_Wishes", mysql)
 
     return render_template(
         'entity.html',
@@ -111,9 +107,7 @@ def wishes():
 
 @app.route("/categories")
 def categories():
-
-    query = "SELECT * FROM Categories;"
-    data, tableHeader = RunSelectQuery(query, mysql)
+    data, tableHeader = RunSelectQuery("Categories", mysql)
 
     return render_template(
         'entity.html',
