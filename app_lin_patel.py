@@ -39,11 +39,13 @@ def hello_world():
 def customers():
     data = RunSelectQuery("Customers", mysql)
     tableHeader = GetAttributes("Customers", mysql)
+    labels = Beautify(tableHeader)
     return render_template(
         'entity.html',
         title="Customers",
         headers=tableHeader,
         data=data,
+        labels=labels[1:],
         PageHeader="Customers Table",
         UpdateRoute="/update/customers",
         DeleteRoute="/delete/customers",
@@ -64,6 +66,7 @@ def houses():
         headers=tableHeader,
         data=data,
         categories=cat,
+        labels=labels[1:],
         PageHeader="Houses Table",
         UpdateRoute="/update/houses",
         DeleteRoute="/delete/houses",
@@ -79,11 +82,13 @@ def sales():
     tableHeader = GetAttributes("Sales", mysql)
     customers = GetCustomerNames(mysql)
     houses = GetHouseStreets(mysql)
+    labels = Beautify(tableHeader)
     return render_template(
         'entity.html',
         title="Sales",
         headers=tableHeader,
         data=data,
+        labels=labels[1:],
         customers=customers,
         houses=houses,
         PageHeader="Sales Table",
@@ -99,11 +104,13 @@ def wishes():
     tableHeader = GetAttributes("Customer_House_Wishes", mysql)
     houses = GetHouseStreets(mysql)
     customers = GetCustomerNames(mysql)
+    labels = Beautify(tableHeader)
     return render_template(
         'entity.html',
         title="Customer House Wishes",
         headers=tableHeader,
         data=data,
+        labels=labels[1:],
         houses=houses,
         customers=customers,
         PageHeader="Customer House Wishes",
@@ -117,11 +124,13 @@ def wishes():
 def categories():
     data = RunSelectQuery("Categories", mysql)
     tableHeader = GetAttributes("Categories", mysql)
+    labels = Beautify(tableHeader)
     return render_template(
         'entity.html',
         title="Categories",
         headers=tableHeader,
         data=data,
+        labels=labels[1:],
         PageHeader="Categories Table",
         UpdateRoute="/update/categories",
         DeleteRoute="/delete/categories",
@@ -205,6 +214,7 @@ def update_helper(req, table, id_attribute, redirect_path, houses=None, customer
     if req.method == "GET":
         data = RunSelectQuery(table, mysql, (id_attribute, req.args["id"]))
         attributes = GetAttributes(table, mysql)
+        labels = Beautify(attributes)
         zipped = list(zip(data[0], attributes))
         return render_template(
             'update.html',
@@ -213,6 +223,7 @@ def update_helper(req, table, id_attribute, redirect_path, houses=None, customer
             houses=houses,
             customers=customers,
             categories=categories,
+            labels=labels
         )
     else:
         args = req.form

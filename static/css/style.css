@@ -60,3 +60,12 @@ td, th {
     position: fixed;
     visibility: hidden;
 }
+
+.input-attr {
+    display: flex;
+}
+
+.input-attr > label {
+    margin-right: auto;
+    padding-right: 50px;
+}

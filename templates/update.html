@@ -5,7 +5,8 @@
 <table>
     {% for i in range(attributes|length) %}
     <tr>
-        <td>
+        <td id="input-attr" style="text-align: right;">
+            <label>{% if labels %}{{ labels[i] }}{% endif %}</label>
             {% if (categories and attributes[i][1] == "category_id" and i != 0) %}
             <select name="category_id">
                 <option value="">NONE</option>
@@ -25,8 +26,10 @@
                 <option value="{{ customer[0] }}">{{ customer[1] }}</option>
                 {% endfor %}
             </select>
+            {% elif attributes[i][1] == "date" %}
+                <input name="{{attributes[i][1]}}" type="date"/>
             {% else %}
-            <input {% if i==0 %}readonly{% endif %} name="{{attributes[i][1]}}" value="{{attributes[i][0]}}" type="text">
+            <input {% if i==0 or attributes[i][1]=="create_at" or attributes[i][1]=="updated_at"%}readonly{% endif %} name="{{attributes[i][1]}}" value="{{attributes[i][0]}}" type="text">
             {% endif %}
         </td>
     </tr>

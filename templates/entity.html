@@ -46,19 +46,20 @@
 <form action="{{InsertRoute}}" method="POST">
     <table>
         {% for i in range(headers[1:]|length) %}
-        <tr>
-            <td style="text-align: right;"><label> {% if beauty_headers %}{{ beauty_headers[i+1] }} {% endif %}
+        <tr id="input-attr">
+            <td class="input-attr" style="text-align: right;">
+            <label> {% if labels %}{{ labels[i] }} {% endif %}</label>
                 {% if (categories and headers[i+1] == "category_id") %}
                 <select name="category_id">
                     <option value="">NONE</option>
                     {% for cat in categories %}
-                    <option value="{{ cat[0] }}">{{ cat[1] }}</option>
+                    <option value="{{ cat[0] }}">{{ cat[0] }} - {{ cat[1] }}</option>
                     {% endfor %}
                 </select>
                 {% elif (houses and headers[i+1] == "house_id") %}
                 <select name="house_id">
                     {% for house in houses %}
-                    <option value="{{ house[0] }}">{{ house[1] }}</option>
+                    <option value="{{ house[0] }}">{{ house[0] }} - {{ house[1] }}</option>
                     {% endfor %}
                 </select>
                 {% elif (customers and headers[i+1] == "customer_id") %}
@@ -67,10 +68,12 @@
                     <option value="{{ customer[0] }}">{{ customer[1] }}</option>
                     {% endfor %}
                 </select>
+                {% elif headers[i+1] == "date" %}
+                <input name="{{ headers[i+1] }}" type="date"/>
                 {% else %}
-                <input name="{{ headers[i+1] }}" placeholder="{{ headers[i+1] }}"/>
+                <input {% if headers[i+1]=="create_at" or headers[i+1]=="updated_at" %}readonly{% endif %} name="{{ headers[i+1] }}" placeholder="{{ headers[i+1] }}"/>
                 {% endif %}
-            </label></td>
+            </td>
         </tr>
         {% endfor %}
     </table>
