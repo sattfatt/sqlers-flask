@@ -182,7 +182,8 @@ def update_customers():
 
 @app.route("/update/houses", methods=["GET", "POST"])
 def update_houses():
-    return update_helper(request, "Houses", "house_id", "/houses")
+    cat = GetCategoryNames(mysql)
+    return update_helper(request, "Houses", "house_id", "/houses", categories=cat)
 
 
 @app.route("/update/sales", methods=["GET", "POST"])
@@ -200,7 +201,7 @@ def update_categories():
     return update_helper(request, "Categories", "category_id", "/categories")
 
 
-def update_helper(req, table, id_attribute, redirect_path):
+def update_helper(req, table, id_attribute, redirect_path, houses=None, customers=None, categories=None):
     if req.method == "GET":
         data = RunSelectQuery(table, mysql, (id_attribute, req.args["id"]))
         attributes = GetAttributes(table, mysql)
@@ -208,10 +209,14 @@ def update_helper(req, table, id_attribute, redirect_path):
         return render_template(
             'update.html',
             attributes=zipped,
-            UpdateRoute="/update{}".format(redirect_path)
+            UpdateRoute="/update{}".format(redirect_path),
+            houses=houses,
+            customers=customers,
+            categories=categories,
         )
     else:
         args = req.form
+        print(table,args)
         RunUpdateQuery(table, args, mysql)
         return redirect(redirect_path)
 

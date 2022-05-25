@@ -5,7 +5,30 @@
 <table>
     {% for i in range(attributes|length) %}
     <tr>
-        <td><input {% if i==0 %}disabled{% endif %} name="{{attributes[i][1]}}" value="{{attributes[i][0]}}" type="text"></td>
+        <td>
+            {% if (categories and attributes[i][1] == "category_id" and i != 0) %}
+            <select name="category_id">
+                <option value="">NONE</option>
+                {% for cat in categories %}
+                <option value="{{ cat[0] }}">{{ cat[1] }}</option>
+                {% endfor %}
+            </select>
+            {% elif (houses and attributes[i][1] == "house_id" and i != 0) %}
+            <select name="house_id">
+                {% for house in houses %}
+                <option value="{{ house[0] }}">{{ house[1] }}</option>
+                {% endfor %}
+            </select>
+            {% elif (customers and attributes[i][1] == "customer_id" and i != 0) %}
+            <select name="customer_id">
+                {% for customer in customers %}
+                <option value="{{ customer[0] }}">{{ customer[1] }}</option>
+                {% endfor %}
+            </select>
+            {% else %}
+            <input {% if i==0 %}readonly{% endif %} name="{{attributes[i][1]}}" value="{{attributes[i][0]}}" type="text">
+            {% endif %}
+        </td>
     </tr>
     {% endfor %}
 </table>

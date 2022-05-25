@@ -48,6 +48,7 @@ def RunUpdateQuery(table, args, mysql):
     q = q[:-1]
 
     query = "UPDATE {} SET {} WHERE {}='{}';".format(table, q, keys[0], values[0])
+    print(query)
 
     cur = mysql.connection.cursor()
     cur.execute(query, values[1:])
