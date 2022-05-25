@@ -21,7 +21,8 @@ def RunSelectQuery(table, mysql, where=None):
     if len(results) > 0:
         keys = list(results[0].keys())
 
-    return data, keys
+    return data
+
 
 def RunInsertQuery(table, form, mysql):
     keys = list(form.keys())
@@ -35,6 +36,7 @@ def RunInsertQuery(table, form, mysql):
     cur = mysql.connection.cursor()
     cur.execute(query, values)
     mysql.connection.commit()
+
 
 def RunUpdateQuery(table, args, mysql):
     keys = list(args.keys())
@@ -51,6 +53,7 @@ def RunUpdateQuery(table, args, mysql):
     cur.execute(query, values[1:])
     mysql.connection.commit()
 
+
 def RunDeleteQuery(table, args, id_attribute, mysql):
     keys = list(args.keys())
     values = list(args.values())
@@ -58,4 +61,42 @@ def RunDeleteQuery(table, args, id_attribute, mysql):
     cur = mysql.connection.cursor()
     cur.execute(query)
     mysql.connection.commit()
-    
+
+
+def GetAttributes(Table, mysql):
+    query = "DESCRIBE {}".format(Table)
+    cur = mysql.connection.cursor()
+    cur.execute(query)
+    result = cur.fetchall()
+    result = [res['Field'] for res in result]
+    print(result)
+    return result
+
+
+def GetHouseStreets(mysql):
+    data = RunSelectQuery("Houses", mysql)
+    houses = []
+    for row in data:
+        houses.append((row[0], row[5]))
+    return houses
+
+
+def GetCategoryNames(mysql):
+    data = RunSelectQuery("Categories", mysql)
+    categories = []
+    for row in data:
+        categories.append((row[0], row[1]))
+    return categories
+
+def GetCustomerNames(mysql):
+    data = RunSelectQuery("Customers", mysql)
+    customers = []
+    for row in data:
+        customers.append((row[0], " ".join((row[1], row[2]))))
+    return customers
+
+def Beautify(header):
+    """Returns the headers in a more readable form."""
+    newheader = [(" ".join(h.split("_"))).title() for h in header]
+    return newheader
+

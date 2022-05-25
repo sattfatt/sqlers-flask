@@ -3,9 +3,9 @@
 <h1>Update</h1>
 <form action="{{UpdateRoute}}" method="post">
 <table>
-    {% for item in attributes %}
+    {% for i in range(attributes|length) %}
     <tr>
-        <td><input name="{{item[1]}}" value="{{item[0]}}" type="text"></td>
+        <td><input {% if i==0 %}disabled{% endif %} name="{{attributes[i][1]}}" value="{{attributes[i][0]}}" type="text"></td>
     </tr>
     {% endfor %}
 </table>

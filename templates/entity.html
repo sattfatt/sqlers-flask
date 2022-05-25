@@ -2,8 +2,8 @@
 {% block content %}
 {% if SearchRoute %}
 <form action={{SearchRoute}}>
-    <input placeholder="search for a {{SearchAttribute}}" name="search" type="text"></input>
-    <input value="search" type="submit"></input>
+    <input placeholder="search for a {{ SearchAttribute }}" name="search" type="text"/>
+    <input value="search" type="submit"/>
 </form>
 {% endif %}
 <div style="overflow-x:auto; width:100%">
@@ -25,14 +25,14 @@
                 {% endfor %}
                 <td>
                     <form method="get" action="{{UpdateRoute}}">
-                        <input value="update" type="submit"></input>
-                        <input name="id" value="{{row[0]}}" type="text" class="hidden"></input>
+                        <input value="update" type="submit"/>
+                        <input name="id" value="{{ row[0] }}" type="text" class="hidden"/>
                     </form>
                 </td>
                 <td>
                     <form method="get" action="{{DeleteRoute}}">
-                        <input value="delete" type="submit"></input>
-                        <input name="id" value="{{row[0]}}" type="text" class="hidden"></input>
+                        <input value="delete" type="submit"/>
+                        <input name="id" value="{{ row[0] }}" type="text" class="hidden"/>
                     </form>
                 </td>
             </tr>
@@ -45,9 +45,32 @@
 <h1>Insert</h1>
 <form action="{{InsertRoute}}" method="POST">
     <table>
-        {% for header in headers[1:] %}
+        {% for i in range(headers[1:]|length) %}
         <tr>
-            <td><input name="{{header}}" placeholder="{{header}}"></input></td>
+            <td style="text-align: right;"><label> {% if beauty_headers %}{{ beauty_headers[i+1] }} {% endif %}
+                {% if (categories and headers[i+1] == "category_id") %}
+                <select name="category_id">
+                    <option value="">NONE</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat[0] }}">{{ cat[1] }}</option>
+                    {% endfor %}
+                </select>
+                {% elif (houses and headers[i+1] == "house_id") %}
+                <select name="house_id">
+                    {% for house in houses %}
+                    <option value="{{ house[0] }}">{{ house[1] }}</option>
+                    {% endfor %}
+                </select>
+                {% elif (customers and headers[i+1] == "customer_id") %}
+                <select name="customer_id">
+                    {% for customer in customers %}
+                    <option value="{{ customer[0] }}">{{ customer[1] }}</option>
+                    {% endfor %}
+                </select>
+                {% else %}
+                <input name="{{ headers[i+1] }}" placeholder="{{ headers[i+1] }}"/>
+                {% endif %}
+            </label></td>
         </tr>
         {% endfor %}
     </table>

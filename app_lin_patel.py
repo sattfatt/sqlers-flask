@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, Request
 from flask_mysqldb import MySQL
-from database import SetupDatabaseConnection, RunSelectQuery, RunUpdateQuery, RunDeleteQuery, RunInsertQuery
+from database import SetupDatabaseConnection, RunSelectQuery, RunUpdateQuery, RunDeleteQuery, RunInsertQuery, GetCategoryNames, Beautify, GetAttributes, GetHouseStreets, GetCustomerNames
 from werkzeug.datastructures import ImmutableOrderedMultiDict
 
 # -------------
@@ -37,7 +37,8 @@ def hello_world():
 
 @app.route("/customers")
 def customers():
-    data, tableHeader = RunSelectQuery("Customers", mysql)
+    data = RunSelectQuery("Customers", mysql)
+    tableHeader = GetAttributes("Customers", mysql)
     return render_template(
         'entity.html',
         title="Customers",
@@ -53,13 +54,16 @@ def customers():
 @app.route("/houses")
 def houses():
 
-    data, tableHeader = RunSelectQuery("Houses", mysql, search_helper(request, "street"))
-
+    data = RunSelectQuery("Houses", mysql, search_helper(request, "street"))
+    tableHeader = GetAttributes("Houses", mysql)
+    cat = GetCategoryNames(mysql)
+    labels = Beautify(tableHeader)
     return render_template(
         'entity.html',
         title="Houses",
         headers=tableHeader,
         data=data,
+        categories=cat,
         PageHeader="Houses Table",
         UpdateRoute="/update/houses",
         DeleteRoute="/delete/houses",
@@ -71,12 +75,17 @@ def houses():
 
 @app.route("/sales")
 def sales():
-    data, tableHeader = RunSelectQuery("Sales", mysql)
+    data = RunSelectQuery("Sales", mysql)
+    tableHeader = GetAttributes("Sales", mysql)
+    customers = GetCustomerNames(mysql)
+    houses = GetHouseStreets(mysql)
     return render_template(
         'entity.html',
         title="Sales",
         headers=tableHeader,
         data=data,
+        customers=customers,
+        houses=houses,
         PageHeader="Sales Table",
         UpdateRoute="/update/sales",
         DeleteRoute="/delete/sales",
@@ -86,13 +95,17 @@ def sales():
 
 @app.route("/customer_house_wishes")
 def wishes():
-    data, tableHeader = RunSelectQuery("Customer_House_Wishes", mysql)
-
+    data = RunSelectQuery("Customer_House_Wishes", mysql)
+    tableHeader = GetAttributes("Customer_House_Wishes", mysql)
+    houses = GetHouseStreets(mysql)
+    customers = GetCustomerNames(mysql)
     return render_template(
         'entity.html',
         title="Customer House Wishes",
         headers=tableHeader,
         data=data,
+        houses=houses,
+        customers=customers,
         PageHeader="Customer House Wishes",
         UpdateRoute="/update/customer_house_wishes",
         DeleteRoute="/delete/customer_house_wishes",
@@ -102,8 +115,8 @@ def wishes():
 
 @app.route("/categories")
 def categories():
-    data, tableHeader = RunSelectQuery("Categories", mysql)
-
+    data = RunSelectQuery("Categories", mysql)
+    tableHeader = GetAttributes("Categories", mysql)
     return render_template(
         'entity.html',
         title="Categories",
@@ -112,7 +125,7 @@ def categories():
         PageHeader="Categories Table",
         UpdateRoute="/update/categories",
         DeleteRoute="/delete/categories",
-        InsertRoute="/insert/categories"
+        InsertRoute="/insert/categories",
     )
 
 def search_helper(request, attribute_name):
@@ -189,7 +202,8 @@ def update_categories():
 
 def update_helper(req, table, id_attribute, redirect_path):
     if req.method == "GET":
-        data, attributes = RunSelectQuery(table, mysql, (id_attribute, req.args["id"]))
+        data = RunSelectQuery(table, mysql, (id_attribute, req.args["id"]))
+        attributes = GetAttributes(table, mysql)
         zipped = list(zip(data[0], attributes))
         return render_template(
             'update.html',
