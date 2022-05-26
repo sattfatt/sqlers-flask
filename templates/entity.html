@@ -1,82 +1,84 @@
-{% extends 'layout.html' %}
-{% block content %}
-{% if SearchRoute %}
-<form action={{SearchRoute}}>
-    <input placeholder="search for a {{ SearchAttribute }}" name="search" type="text"/>
-    <input value="search" type="submit"/>
+{% extends 'layout.html' %} {% block content %} {% if SearchRoute %}
+<form action="{{SearchRoute}}">
+  <input
+    placeholder="search for a {{ SearchAttribute }}"
+    name="search"
+    type="text"
+  />
+  <input value="search" type="submit" />
 </form>
 {% endif %}
-<div style="overflow-x:auto; width:100%">
-    <table>
-        <thead>
-            <tr>
-                {% for header in headers %}
-                <th>{{header}}</th>
-                {% endfor %}
-                <th>Update</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in data %}
-            <tr>
-                {% for item in row %}
-                <td>{{item}}</td>
-                {% endfor %}
-                <td>
-                    <form method="get" action="{{UpdateRoute}}">
-                        <input value="update" type="submit"/>
-                        <input name="id" value="{{ row[0] }}" type="text" class="hidden"/>
-                    </form>
-                </td>
-                <td>
-                    <form method="get" action="{{DeleteRoute}}">
-                        <input value="delete" type="submit"/>
-                        <input name="id" value="{{ row[0] }}" type="text" class="hidden"/>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div style="overflow-x: auto; width: 100%">
+  <table>
+    <thead>
+      <tr>
+        {% for header in headers %}
+        <th>{{header}}</th>
+        {% endfor %}
+        <th>Update</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in data %}
+      <tr>
+        {% for item in row %}
+        <td>{{item}}</td>
+        {% endfor %}
+        <td>
+          <form method="get" action="{{UpdateRoute}}">
+            <input value="update" type="submit" />
+            <input name="id" value="{{ row[0] }}" type="text" class="hidden" />
+          </form>
+        </td>
+        <td>
+          <form method="get" action="{{DeleteRoute}}">
+            <input value="delete" type="submit" />
+            <input name="id" value="{{ row[0] }}" type="text" class="hidden" />
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
-{% endblock %}
-{% block insertform %}
+{% endblock %} {% block insertform %}
 <h1>Insert</h1>
 <form action="{{InsertRoute}}" method="POST">
-    <table>
-        {% for i in range(headers[1:]|length) %}
-        <tr id="input-attr">
-            <td class="input-attr" style="text-align: right;">
-            <label> {% if labels %}{{ labels[i] }} {% endif %}</label>
-                {% if (categories and headers[i+1] == "category_id") %}
-                <select name="category_id">
-                    <option value="">NONE</option>
-                    {% for cat in categories %}
-                    <option value="{{ cat[0] }}">{{ cat[0] }} - {{ cat[1] }}</option>
-                    {% endfor %}
-                </select>
-                {% elif (houses and headers[i+1] == "house_id") %}
-                <select name="house_id">
-                    {% for house in houses %}
-                    <option value="{{ house[0] }}">{{ house[0] }} - {{ house[1] }}</option>
-                    {% endfor %}
-                </select>
-                {% elif (customers and headers[i+1] == "customer_id") %}
-                <select name="customer_id">
-                    {% for customer in customers %}
-                    <option value="{{ customer[0] }}">{{ customer[1] }}</option>
-                    {% endfor %}
-                </select>
-                {% elif headers[i+1] == "date" %}
-                <input name="{{ headers[i+1] }}" type="date"/>
-                {% else %}
-                <input {% if headers[i+1]=="create_at" or headers[i+1]=="updated_at" %}readonly{% endif %} name="{{ headers[i+1] }}" placeholder="{{ headers[i+1] }}"/>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    <input type="submit">
+  <table>
+    {% for i in range(headers[1:]|length) %} {% if headers[i+1]!="create_at" and
+    headers[i+1]!="updated_at" %}
+    <tr id="input-attr">
+      <td class="input-attr" style="text-align: right">
+        <label> {% if labels %}{{ labels[i] }} {% endif %}</label>
+        {% if (categories and headers[i+1] == "category_id") %}
+        <select name="category_id">
+          <option value="">NONE</option>
+          {% for cat in categories %}
+          <option value="{{ cat[0] }}">{{ cat[0] }} - {{ cat[1] }}</option>
+          {% endfor %}
+        </select>
+        {% elif (houses and headers[i+1] == "house_id") %}
+        <select name="house_id">
+          {% for house in houses %}
+          <option value="{{ house[0] }}">
+            {{ house[0] }} - {{ house[1] }}
+          </option>
+          {% endfor %}
+        </select>
+        {% elif (customers and headers[i+1] == "customer_id") %}
+        <select name="customer_id">
+          {% for customer in customers %}
+          <option value="{{ customer[0] }}">{{ customer[1] }}</option>
+          {% endfor %}
+        </select>
+        {% elif headers[i+1] == "date" %}
+        <input name="{{ headers[i+1] }}" type="date" />
+        {% endif %}
+      </td>
+    </tr>
+    {% endif %} {% endfor %}
+  </table>
+  <input type="submit" />
 </form>
 {% endblock %}

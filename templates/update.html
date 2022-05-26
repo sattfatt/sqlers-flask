@@ -4,6 +4,7 @@
 <form action="{{UpdateRoute}}" method="post">
 <table>
     {% for i in range(attributes|length) %}
+    {% if attributes[i][1] != "create_at" and attributes[i][1] != "updated_at" %}
     <tr>
         <td id="input-attr" style="text-align: right;">
             <label>{% if labels %}{{ labels[i] }}{% endif %}</label>
@@ -11,13 +12,21 @@
             <select name="category_id">
                 <option value="">NONE</option>
                 {% for cat in categories %}
+                {% if attributes[i][0] == cat[0] %}
+                <option value="{{ cat[0] }}" selected>{{ cat[1] }}</option>
+                {% else %}
                 <option value="{{ cat[0] }}">{{ cat[1] }}</option>
+                {% endif %}
                 {% endfor %}
             </select>
             {% elif (houses and attributes[i][1] == "house_id" and i != 0) %}
             <select name="house_id">
                 {% for house in houses %}
+                {% if attributes[i][0] == house[0] %}
+                <option value="{{ house[0] }}" selected>{{ house[1] }}</option>
+                {% else %}
                 <option value="{{ house[0] }}">{{ house[1] }}</option>
+                {% endif %}
                 {% endfor %}
             </select>
             {% elif (customers and attributes[i][1] == "customer_id" and i != 0) %}
@@ -27,12 +36,13 @@
                 {% endfor %}
             </select>
             {% elif attributes[i][1] == "date" %}
-                <input name="{{attributes[i][1]}}" type="date"/>
+                <input name="{{attributes[i][1]}}" type="date" value="{{attributes[i][0]}}" />
             {% else %}
             <input {% if i==0 or attributes[i][1]=="create_at" or attributes[i][1]=="updated_at"%}readonly{% endif %} name="{{attributes[i][1]}}" value="{{attributes[i][0]}}" type="text">
             {% endif %}
         </td>
     </tr>
+    {% endif %}
     {% endfor %}
 </table>
 <input value="update" type="submit"></input>

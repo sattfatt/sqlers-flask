@@ -170,7 +170,10 @@ def insert_sales():
 
 @app.route("/insert/customer_house_wishes", methods=["POST"])
 def insert_wishes():
-    RunInsertQuery("Customer_House_Wishes", request.form, mysql)
+    query = "INSERT INTO Customer_House_Wishes (house_id,customer_id,create_at,updated_at) VALUES (%s,%s,CURRENT_TIMESTAMP(),CURRENT_TIMESTAMP());"
+    cur = mysql.connection.cursor()
+    cur.execute(query, [request.form["house_id"], request.form["customer_id"]])
+    mysql.connection.commit()
     return redirect("/customer_house_wishes")
 
 
@@ -197,12 +200,20 @@ def update_houses():
 
 @app.route("/update/sales", methods=["GET", "POST"])
 def update_sales():
-    return update_helper(request, "Sales", "sale_id", "/sales")
+    houses = GetHouseStreets(mysql)
+    return update_helper(request, "Sales", "sale_id", "/sales", houses=houses)
 
 
 @app.route("/update/customer_house_wishes", methods=["GET", "POST"])
 def update_customer_house_wishes():
-    return update_helper(request, "Customer_House_Wishes", "wish_id", "/customer_house_wishes")
+    def query_func():
+        query = "UPDATE Customer_House_Wishes SET house_id=%s,customer_id=%s,updated_at=CURRENT_TIMESTAMP() WHERE wish_id=%s;"
+        cur = mysql.connection.cursor()
+        cur.execute(query, [request.form["house_id"], request.form["customer_id"], request.form["wish_id"]])
+        mysql.connection.commit()
+    houses = GetHouseStreets(mysql)
+    customers = GetCustomerNames(mysql)
+    return update_helper(request, "Customer_House_Wishes", "wish_id", "/customer_house_wishes", query_func=query_func, houses=houses, customers=customers)
 
 
 @app.route("/update/categories", methods=["GET", "POST"])
@@ -210,7 +221,7 @@ def update_categories():
     return update_helper(request, "Categories", "category_id", "/categories")
 
 
-def update_helper(req, table, id_attribute, redirect_path, houses=None, customers=None, categories=None):
+def update_helper(req, table, id_attribute, redirect_path, houses=None, customers=None, categories=None, query_func=None):
     if req.method == "GET":
         data = RunSelectQuery(table, mysql, (id_attribute, req.args["id"]))
         attributes = GetAttributes(table, mysql)
@@ -226,9 +237,11 @@ def update_helper(req, table, id_attribute, redirect_path, houses=None, customer
             labels=labels
         )
     else:
-        args = req.form
-        print(table,args)
-        RunUpdateQuery(table, args, mysql)
+        if query_func:
+            query_func()
+        else:
+            args = req.form
+            RunUpdateQuery(table, args, mysql)
         return redirect(redirect_path)
 
 # -------------
