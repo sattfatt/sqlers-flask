@@ -74,6 +74,8 @@
         </select>
         {% elif headers[i+1] == "date" %}
         <input name="{{ headers[i+1] }}" type="date" />
+        {% else %}
+        <input {% if headers[i+1]=="create_at" or headers[i+1]=="updated_at" %}readonly{% endif %} name="{{ headers[i+1] }}" placeholder="{{ headers[i+1] }}"/>
         {% endif %}
       </td>
     </tr>
