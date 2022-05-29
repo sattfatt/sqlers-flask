@@ -59,23 +59,36 @@
           {% endfor %}
         </select>
         {% elif (houses and headers[i+1] == "house_id") %}
-        <select name="house_id">
-          {% for house in houses %}
-          <option value="{{ house[0] }}">
-            {{ house[0] }} - {{ house[1] }}
-          </option>
-          {% endfor %}
-        </select>
+          <select name="house_id">
+            {% for house in houses %}
+            <option value="{{ house[0] }}">
+              {{ house[0] }} - {{ house[1] }}
+            </option>
+            {% endfor %}
+          </select>
+        {% elif (headers[i+1] == "house_id") %}
+          No Houses Available
         {% elif (customers and headers[i+1] == "customer_id") %}
         <select name="customer_id">
           {% for customer in customers %}
           <option value="{{ customer[0] }}">{{ customer[1] }}</option>
           {% endfor %}
         </select>
-        {% elif headers[i+1] == "date" %}
-        <input name="{{ headers[i+1] }}" type="date" />
+        {% elif (headers[i+1] == "is_active") %}
+        <select name="is_active">
+          <option value="0">false</option>
+          <option value="1">true</option>
+        </select>
+        {% elif headers[i+1] in ["date", "list_date"] %}
+        <input name="{{ headers[i+1] }}" type="date" required />
+        {% elif headers[i+1] in ["age", "rooms", "baths"] %}
+        <input name="{{ headers[i+1] }}" type="number" min="1" required />
+        {% elif headers[i+1] == "sale_price" %}
+        <input name="{{ headers[i+1] }}" type="number" min="0" step="any" required />
         {% else %}
-        <input {% if headers[i+1]=="create_at" or headers[i+1]=="updated_at" %}readonly{% endif %} name="{{ headers[i+1] }}" placeholder="{{ headers[i+1] }}"/>
+        <input
+          {% if headers[i+1] in required_fields %}required{% endif %} name="{{ headers[i+1] }}" placeholder="{{ headers[i+1] }}"
+        />
         {% endif %}
       </td>
     </tr>

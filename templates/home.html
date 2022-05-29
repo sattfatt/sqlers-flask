@@ -1,6 +1,40 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div>
-        Home Page :)
+    <div class="home_container">
+        <div>
+            <a href="/customers" class="home_nav_button">Customers</a>
+            <ul>
+                <li>Display customer information</li>
+                <li>Add, update and Remove customer information</li>
+            </ul>
+        </div>
+        <div>
+            <a href="/houses" class="home_nav_button">Houses</a>
+            <ul>
+                <li>Display houses regions, price and other information</li>
+                <li>Add, update and Remove houses information</li>
+            </ul>
+        </div>
+        <div>
+            <a href="/sales" class="home_nav_button">Sales</a>
+            <ul>
+                <li>Display houses sale price</li>
+                <li>Add, update and Remove houses sale information; hot objects are off market after sold/li>
+            </ul>
+        </div>
+        <div>
+            <a href="/customer_house_wishes" class="home_nav_button">Wishes</a>
+            <ul>
+                <li>Display customer's wishes list</li>
+                <li>Add, update and Remove houses sale information</li>
+            </ul>
+        </div>
+        <div>
+            <a href="/categories" class="home_nav_button">Categories</a>
+            <ul>
+                <li>Display houses categoriest</li>
+                <li>Add, update and Remove house categories</li>
+            </ul>
+        </div>
     </div>
 {% endblock %}

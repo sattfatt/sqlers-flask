@@ -38,6 +38,7 @@ def hello_world():
 @app.route("/customers")
 def customers():
     data = RunSelectQuery("Customers", mysql)
+    required_fields = ["first_name", "last_name", "age", "email", "is_active", "phone"]
     tableHeader = GetAttributes("Customers", mysql)
     labels = Beautify(tableHeader)
     return render_template(
@@ -45,6 +46,7 @@ def customers():
         title="Customers",
         headers=tableHeader,
         data=data,
+        required_fields=required_fields,
         labels=labels[1:],
         PageHeader="Customers Table",
         UpdateRoute="/update/customers",
@@ -55,8 +57,8 @@ def customers():
 
 @app.route("/houses")
 def houses():
-
     data = RunSelectQuery("Houses", mysql, search_helper(request, "street"))
+    required_fields = ["category_id", "list_date"]
     tableHeader = GetAttributes("Houses", mysql)
     cat = GetCategoryNames(mysql)
     labels = Beautify(tableHeader)
@@ -65,6 +67,7 @@ def houses():
         title="Houses",
         headers=tableHeader,
         data=data,
+        required_fields=required_fields,
         categories=cat,
         labels=labels[1:],
         PageHeader="Houses Table",
@@ -79,15 +82,24 @@ def houses():
 @app.route("/sales")
 def sales():
     data = RunSelectQuery("Sales", mysql)
+    required_fields = ["house_id", "customer_id", "date", "sale_price"]
     tableHeader = GetAttributes("Sales", mysql)
     customers = GetCustomerNames(mysql)
-    houses = GetHouseStreets(mysql)
+
+    # Select those houses not in Sales
+    query = "SELECT house_id, street FROM Houses WHERE house_id NOT IN (SELECT house_id FROM Sales);"
+    cur = mysql.connection.cursor()
+    cur.execute(query)
+    results = cur.fetchall()
+    houses = [(house["house_id"], house["street"]) for house in results]
+
     labels = Beautify(tableHeader)
     return render_template(
         'entity.html',
         title="Sales",
         headers=tableHeader,
         data=data,
+        required_fields=required_fields,
         labels=labels[1:],
         customers=customers,
         houses=houses,
@@ -123,6 +135,7 @@ def wishes():
 @app.route("/categories")
 def categories():
     data = RunSelectQuery("Categories", mysql)
+    required_fields = ["name", "rooms", "baths"]
     tableHeader = GetAttributes("Categories", mysql)
     labels = Beautify(tableHeader)
     return render_template(
@@ -130,6 +143,7 @@ def categories():
         title="Categories",
         headers=tableHeader,
         data=data,
+        required_fields=required_fields,
         labels=labels[1:],
         PageHeader="Categories Table",
         UpdateRoute="/update/categories",
