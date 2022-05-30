@@ -54,6 +54,17 @@ td, th {
     padding: 10px;
 }
 
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color:#5853a5;
+  color: white;
+  text-align: center;
+  padding: 1em;
+}
+
 .hidden {
     top:0;
     left:0;
@@ -68,4 +79,13 @@ td, th {
 .input-attr > label {
     margin-right: auto;
     padding-right: 50px;
+}
+
+.home_container {
+    padding-left: 2em;
+}
+
+.home_nav_button {
+    background-color: #ef9208;
+    border-radius: 10px;
 }
