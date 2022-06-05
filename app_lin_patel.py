@@ -17,7 +17,7 @@ class OverrideFlask(Flask):
 
 
 app = OverrideFlask(__name__)
-app.secret_key = 'super secret key'
+app.secret_key = 'app_lin_patel'
 app.config['SESSION_TYPE'] = 'filesystem'
 
 SetupDatabaseConnection(app)

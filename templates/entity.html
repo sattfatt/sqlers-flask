@@ -1,4 +1,6 @@
-{% extends 'layout.html' %} {% block content %} {% if SearchRoute %}
+{% extends 'layout.html' %}
+{% block content %}
+{% if SearchRoute %}
 <form action="{{SearchRoute}}">
   <input
     placeholder="search for a {{ SearchAttribute }}"
