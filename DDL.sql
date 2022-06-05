@@ -28,7 +28,8 @@ CREATE TABLE Houses (
     zip VARCHAR(255),
     location_description VARCHAR(255),
     PRIMARY KEY (house_id),
-    FOREIGN KEY (category_id) REFERENCES Categories (category_id) ON DELETE SET NULL
+    FOREIGN KEY (category_id) REFERENCES Categories (category_id) ON DELETE SET NULL,
+    FULLTEXT(street)
 );
 
 CREATE TABLE Customers (
