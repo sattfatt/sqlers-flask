@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, Request, flash
 from flask_mysqldb import MySQL
-from database import SetupDatabaseConnection, Dberror, RunSelectQuery, RunUpdateQuery, RunDeleteQuery, RunInsertQuery, GetCategoryNames, Beautify, GetAttributes, GetHouseStreets, GetCustomerNames
+from database import SetupDatabaseConnection, Dberror, RunSelectQuery, RunSearchQuery, RunUpdateQuery, RunDeleteQuery, RunInsertQuery, GetCategoryNames, Beautify, GetAttributes, GetHouseStreets, GetCustomerNames
 from werkzeug.datastructures import ImmutableOrderedMultiDict
 
 # -------------
@@ -59,12 +59,14 @@ def customers():
 
 @app.route("/houses")
 def houses():
-    data = RunSelectQuery("Houses", mysql, search_helper(request, "street"))
+    data = RunSearchQuery("Houses", mysql, search_helper(request, "street"))
     required_fields = ["category_id", "list_date"]
     tableHeader = GetAttributes("Houses", mysql)
     cat = GetCategoryNames(mysql)
     labels = Beautify(tableHeader)
-
+    error = Dberror.clearerror()
+    if error:
+        flash(error)
 
     return render_template(
         'entity.html',
@@ -164,7 +166,7 @@ def search_helper(request, attribute_name):
     search = request.args.get("search")
     where = None
     if search is not None and search != "":
-        where = (attribute_name, search)
+        where = search
     return where
 
 

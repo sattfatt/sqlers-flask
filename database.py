@@ -8,6 +8,26 @@ def SetupDatabaseConnection(app):
     app.config['MYSQL_DB'] = 'cs340_linhua'
     app.config['MYSQL_CURSORCLASS'] = "DictCursor"
 
+def RunSearchQuery(table, mysql, search):
+    print(search)
+
+    all = "SELECT * FROM {};".format(table)
+
+    query = "SELECT * FROM {} WHERE MATCH(street) AGAINST('{}*' IN BOOLEAN MODE );".format(table, search)
+
+    if search == "" or search is None:
+        query = all
+    print(query)
+    cur = mysql.connection.cursor()
+    try:
+        cur.execute(query)
+    except:
+        cur.execute(all)
+        Dberror.seterror("Search using alpha numerics only please!")
+    results = cur.fetchall()
+    data = [list(result.values()) for result in results]
+    return data
+
 
 def RunSelectQuery(table, mysql, where=None):
     query = "SELECT * FROM {};".format(table)
