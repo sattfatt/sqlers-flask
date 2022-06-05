@@ -34,7 +34,15 @@ def RunInsertQuery(table, form, mysql):
     query = "INSERT INTO {} ({}) VALUES ({});".format(table, ",".join(keys), placeholder)
     print(query)
     cur = mysql.connection.cursor()
-    cur.execute(query, values)
+
+    try:
+        cur.execute(query, values)
+    except:
+        if table == "Sales":
+            Dberror.seterror("could not insert into {}. House is already sold to someone! Or there are no houses left!".format(table))
+        else:
+            Dberror.seterror("could not insert into {}".format(table))
+
     mysql.connection.commit()
 
 
@@ -51,7 +59,13 @@ def RunUpdateQuery(table, args, mysql):
     print(query)
 
     cur = mysql.connection.cursor()
-    cur.execute(query, values[1:])
+    try:
+        cur.execute(query, values[1:])
+    except:
+        if table == "Sales":
+            Dberror.seterror("could not update {} in {}. House is already sold to someone!".format(args, table))
+        else:
+            Dberror.seterror("could not update {} in {}".format(args, table))
     mysql.connection.commit()
 
 
@@ -101,3 +115,15 @@ def Beautify(header):
     newheader = [(" ".join(h.split("_"))).title() for h in header]
     return newheader
 
+
+class Dberror:
+    LastError = None
+    @classmethod
+    def seterror(cls, error):
+        Dberror.LastError = error
+
+    @classmethod
+    def clearerror(cls):
+        temp = Dberror.LastError
+        Dberror.LastError = None
+        return temp

@@ -78,3 +78,25 @@ td, th {
     background-color: #ef9208;
     border-radius: 10px;
 }
+
+@keyframes fadeout {
+  from {opacity: 1;}
+  to {opacity: 0; visibility: hidden}
+}
+
+.message {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px white solid;
+    animation: fadeout;
+    animation-delay: 3s;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    background: white;
+    color: var(--background-color)
+}

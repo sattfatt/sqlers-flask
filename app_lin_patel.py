@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, redirect, Request
+from flask import Flask, render_template, request, redirect, Request, flash
 from flask_mysqldb import MySQL
-from database import SetupDatabaseConnection, RunSelectQuery, RunUpdateQuery, RunDeleteQuery, RunInsertQuery, GetCategoryNames, Beautify, GetAttributes, GetHouseStreets, GetCustomerNames
+from database import SetupDatabaseConnection, Dberror, RunSelectQuery, RunUpdateQuery, RunDeleteQuery, RunInsertQuery, GetCategoryNames, Beautify, GetAttributes, GetHouseStreets, GetCustomerNames
 from werkzeug.datastructures import ImmutableOrderedMultiDict
 
 # -------------
@@ -17,6 +17,8 @@ class OverrideFlask(Flask):
 
 
 app = OverrideFlask(__name__)
+app.secret_key = 'super secret key'
+app.config['SESSION_TYPE'] = 'filesystem'
 
 SetupDatabaseConnection(app)
 
@@ -62,6 +64,8 @@ def houses():
     tableHeader = GetAttributes("Houses", mysql)
     cat = GetCategoryNames(mysql)
     labels = Beautify(tableHeader)
+
+
     return render_template(
         'entity.html',
         title="Houses",
@@ -94,6 +98,11 @@ def sales():
     houses = [(house["house_id"], house["street"]) for house in results]
 
     labels = Beautify(tableHeader)
+
+    error = Dberror.clearerror()
+    if error:
+        flash(error)
+
     return render_template(
         'entity.html',
         title="Sales",
@@ -172,7 +181,11 @@ def insert_customers():
 
 @app.route("/insert/houses", methods=["POST"])
 def insert_houses():
-    RunInsertQuery("Houses", request.form, mysql)
+    try:
+        RunInsertQuery("Houses", request.form, mysql)
+    except:
+        Dberror.seterror("Failed to insert houses")
+
     return redirect("/houses")
 
 
